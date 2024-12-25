@@ -67,7 +67,7 @@ Run the following command:
 ```mermaid
 graph TD;
    A[Data Generation]-->B[Preprocessing];
-   B[c]-->[s]
+   B[c]-->C[s];
 ```
 
 ### Generating data
