@@ -12,9 +12,9 @@ The neural networks and training are done using **PyTorch** and the quantum circ
   - [Installation](#installation)
   - [Repository Structure](#repository-structure)
 - [Usage](#usage)
-   - [The training pipeline](#the-training-pipeline)
-   - [Generating data](#generating-data)
-   - [Training and evaluation](#training-and-evaluation)
+	- [The training pipeline](#the-training-pipeline)
+	- [Generating data](#generating-data)
+	- [Training and evaluation](#training-and-evaluation)
 - [Interesting points](#interesting-points)
 
 ## Overview
@@ -51,11 +51,11 @@ Run the following command:
    ```bash
    pip install -r requirements.txt
    ```
-   Alternatively, you can manually install the following packages (everything else should come pre-installed by default with Python):
-   - **numpy** version 1.26.4
-   - **scipy** version 1.13.1
-   - **pytorch** version 2.3.1
-   - **qiskit** version 0.46.0 
+	Alternatively, you can manually install the following packages (everything else should come pre-installed by default with Python):
+	- **numpy** version 1.26.4
+	- **scipy** version 1.13.1
+	- **pytorch** version 2.3.1
+	- **qiskit** version 0.46.0 
 ### Repository Structure
 ```
 .
@@ -98,7 +98,9 @@ In the `3_qubits` and `2_qubit_Bell_state` folders you can find the notebooks wh
 Firstly the `FidelityLoss` function is defined which is used as the loss function for the neural networks (*more on this in the [next section](#interesting-points)*) . Afterwards, the neural network itself is defined as a FNN or a CNN along with the training parameters (learning rate, batch size, etc,).
 
 Now we are ready to train and evaluate. After training for a specified number of epochs, we use the `avrg_fidelity(n)` function to evaluate the resultant neural network. This function generates unseen measurment, predicts the density matrix through the neural network and calculates the quantum fidelity between the predicted and real density matrix. Quantum fidelity is a metric which calculates how 'close' to density matrices are. It expresses the probability that one state $\rho$ is able to pass a test to identify as another state $\sigma$, and is defined as:
-$$ F(\rho,\sigma) = \left( \text{tr} \sqrt{\sqrt{\rho} \sigma \sqrt{\rho}} \right)^2 $$
+```math
+F(\rho,\sigma) = \left( \text{tr} \sqrt{\sqrt{\rho} \sigma \sqrt{\rho}} \right)^2
+```
 
 This is done `n` times, after which the function calculates the average of all the `n` fidelities, which we can use as a simple yet fairly indicative metric for whether the network was trained properly.
 
@@ -108,15 +110,18 @@ This is done `n` times, after which the function calculates the average of all t
 What I soon realized is that we are using quantum fidelity as the evaluation metric, and metrics like MSE or MAE are too 'different' from quantum fidelity in terms of what they are actually calculating, therefore making the gradient descent relatively poor.
 
 The next logical step was to try using quantum fidelity as the loss function, given by:
-$$ F(\rho,\sigma) = \left( \text{tr} \sqrt{\sqrt{\rho} \sigma \sqrt{\rho}} \right)^2 $$
+```math
+F(\rho,\sigma) = \left( \text{tr} \sqrt{\sqrt{\rho} \sigma \sqrt{\rho}} \right)^2
+```
 
 where $\rho$ and $\sigma$ are the density matrices which fidelity is being calculated. The problem with using this as a loss function is that the function contains a square root of a matrix, which is not necessarily differentiable and therefore cannot be implemented within PyTorch.
 
 In order to deal with this, we define the loss function as the following: 
-$$ L(\rho,\sigma)=\|(\rho-\sigma)\|_F$$
-
+```math
+L(\rho,\sigma)=\|(\rho-\sigma)\|_F$$
+``` 
 which is the **Frobenius Norm** of the difference between the two matrices. The Frobenius Norm is a measure of the "size" or "magnitude" of a matrix, and is calculated by the square root of the sum of the absolute squares of its elements:
-$$\|A\|_F = \sqrt{\sum_{i=1}^{m} \sum_{j=1}^{n} |A_{ij}|^2}
-$$
-
+```math
+\|A\|_F = \sqrt{\sum_{i=1}^{m} \sum_{j=1}^{n} |A_{ij}|^2}
+```
 Hence, a greater loss would mean a greater Frobenius norm for the difference between the two matrices, meaning that they are more different. This is not the same as quantum fidelity, but it is more analogous than using other more traditional metrics, thereby making effective enough as a loss function for this project.
