@@ -65,9 +65,19 @@ Run the following command:
 
 ### The training pipeline
 ```mermaid
-graph TD;
-   A[Data Generation]-->B[Preprocessing];
-   B[c]-->C[s];
+flowchart TD;
+   A[Start: Measurement Data]-->B;
+   B[Data Preprocessing]-->C;
+   C[Split Data: Training and Testing Sets]-->D;
+   D[Train Neural Networks]-->D1;
+   D-->D2;
+   D1[Feedforward Neural Network (FNN)]-->E1;
+   D2[Convolutional Neural Network (CNN)]-->E2;
+   E1[Predict Density Matrix (FNN)]-->F;
+   E2[Predict Density Matrix (CNN)]-->F;
+   F[Compare with True Density Matrix]-->G;
+   G[Calculate Performance Metrics]-->H;
+   H[Visualize Results]-->I[End];
 ```
 
 ### Generating data
