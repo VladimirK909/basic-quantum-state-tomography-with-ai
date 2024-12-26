@@ -75,12 +75,12 @@ Run the following command:
 Firstly, we need to establish the training pipeline that will be used for performing QST on the quantum circuits, which is given on the following flowchart:
 ```mermaid
 flowchart TD
-    A["Start: Measurement Data - generate random states, pass <br>them through the circuit and measure in X, Y, and Z basis"] --> B["Data Preprocessing - format the data into a suitable<br> structure for training the neural networks"]
+    A["Start: Measurement Data - generate random states, pass them through the circuit and measure in X, Y, and Z basis"] --> B["Data Preprocessing - format the data into a suitable structure for training the neural networks"]
     B --> D["Train Neural Networks"]
     D --> D1["Feedforward Neural Network (FNN)"]
     D --> D2["Convolutional Neural Network (CNN)"]
     D1 --> E["Predict Density Matrix (FNN)"]
-    D2 --> E["Predict Density Matrix - Use the trained networks to <br> reconstruct the density matrix for unseen test data"]
+    D2 --> E["Predict Density Matrix - Use the trained networks to reconstruct the density matrix for unseen test data"]
     E --> F["Compare with True Density Matrix by calculating quantum fidelity"]
     F --> G["Calculate Performance Metrics and Evaluate Results"]
     G --> H["End"]
